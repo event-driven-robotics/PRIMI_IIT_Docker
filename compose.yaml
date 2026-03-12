@@ -1,0 +1,38 @@
+services:
+  robotology:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        YCM_VERSION: ${YCM_VERSION:-v0.15.2}
+        YARP_VERSION: ${YARP_VERSION:-v3.8.0}
+        ED_VERSION: ${ED_VERSION:-master}
+    container_name: robotology-dev
+    command: ["bash", "-lc", "sleep infinity"]
+    privileged: true
+    network_mode: host
+    environment:
+      DISPLAY: ${DISPLAY:-:0}
+      LOCAL_UID: ${LOCAL_UID:-1000}
+      LOCAL_GID: ${LOCAL_GID:-1000}
+      QT_X11_NO_MITSHM: "1"
+    volumes:
+      - type: bind
+        source: .
+        target: /workspace/project
+      - type: bind
+        source: ${HOST_DATA_PATH:-./data}
+        target: /workspace/data
+        read_only: true
+      - type: bind
+        source: /tmp/.X11-unix
+        target: /tmp/.X11-unix
+      - type: bind
+        source: /etc/hosts
+        target: /etc/hosts
+        read_only: true
+      - type: bind
+        source: /dev/bus/usb
+        target: /dev/bus/usb
+    stdin_open: true
+    tty: true

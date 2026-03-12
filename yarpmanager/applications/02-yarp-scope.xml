@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application>
+  <name>YARP Scope</name>
+  <description>Launch the joint/vector plotting GUI.</description>
+  <version>1.0</version>
+  <authors>
+    <author email="">Codex</author>
+  </authors>
+  <module>
+    <name>bash</name>
+    <parameters>-lc "./yarpmanager/bin/launch-yarpscope.sh"</parameters>
+    <node>localhost</node>
+    <workdir>/workspace/project</workdir>
+    <display>--visible_na</display>
+    <ensure>
+      <wait when="start">2.0</wait>
+    </ensure>
+  </module>
+</application>

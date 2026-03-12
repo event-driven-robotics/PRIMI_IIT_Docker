@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application>
+  <name>BallBalance Moving Demo</name>
+  <description>Load the moving BallBalance recording in yarpdataplayer and open the associated viewers.</description>
+  <version>1.0</version>
+  <authors>
+    <author email="">Codex</author>
+  </authors>
+  <module>
+    <name>bash</name>
+    <parameters>-lc "./yarpmanager/bin/launch-ballbalance-demo.sh moving"</parameters>
+    <node>localhost</node>
+    <workdir>/workspace/project</workdir>
+    <display>--visible_na</display>
+    <ensure>
+      <wait when="start">2.0</wait>
+    </ensure>
+  </module>
+</application>

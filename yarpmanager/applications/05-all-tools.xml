@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application>
+  <name>All Tools</name>
+  <description>Launch YARP Data Player, YARP Scope, YARP View, and VFramer together.</description>
+  <version>1.0</version>
+  <authors>
+    <author email="">Codex</author>
+  </authors>
+  <module>
+    <name>./yarpmanager/bin/yarp-data-player</name>
+    <node>localhost</node>
+    <workdir>/workspace/project</workdir>
+    <display>--visible_na</display>
+    <ensure>
+      <wait when="start">2.0</wait>
+    </ensure>
+  </module>
+  <module>
+    <name>./yarpmanager/bin/yarp-scope</name>
+    <node>localhost</node>
+    <workdir>/workspace/project</workdir>
+    <display>--visible_na</display>
+    <ensure>
+      <wait when="start">2.0</wait>
+    </ensure>
+  </module>
+  <module>
+    <name>./yarpmanager/bin/yarp-view</name>
+    <node>localhost</node>
+    <workdir>/workspace/project</workdir>
+    <display>--visible_na</display>
+    <ensure>
+      <wait when="start">2.0</wait>
+    </ensure>
+  </module>
+  <module>
+    <name>./yarpmanager/bin/vframer</name>
+    <node>localhost</node>
+    <workdir>/workspace/project</workdir>
+    <display>--visible_na</display>
+    <ensure>
+      <wait when="start">2.0</wait>
+    </ensure>
+  </module>
+</application>

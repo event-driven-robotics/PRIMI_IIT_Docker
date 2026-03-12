@@ -27,6 +27,76 @@ That means the BallBalance dataset is available inside the container at:
 /workspace/data/BallBalance
 ```
 
+## Installation and Setup
+
+This section covers the installation and setup steps for users who want to run the workstation on their own machine. Currently it is tailored for Ubuntu, but the Docker-based approach should be portable to other Linux distributions with minimal adjustments.
+
+### Required on the host
+
+- Docker Engine
+- Docker Compose plugin
+- a Desktop session with X11 / XWayland available through `DISPLAY`
+- the `xhost` command - Ubuntu users should install the `x11-xserver-utils` package if it is missing
+- `git` if they still need to clone or update the repository
+
+### Exact Docker packages on Ubuntu
+
+For this project, the recommended host-side Docker install is native Docker Engine, not Docker Desktop.
+
+The key packages are:
+
+- `docker-ce`
+- `docker-ce-cli`
+- `containerd.io`
+- `docker-buildx-plugin`
+- `docker-compose-plugin`
+
+If `xhost` is missing, install:
+
+- `x11-xserver-utils`
+
+### What users do not need to install on the host
+
+These are already installed inside the Docker image:
+
+- `YARP`
+- `event-driven`
+- `yarpmanager`
+- `yarpview`
+- `yarpscope`
+- `yarpdataplayer`
+- `vFramer`
+
+### Official install references
+
+- Docker Engine on Ubuntu:
+  - https://docs.docker.com/engine/install/ubuntu/
+- Docker Compose plugin on Linux:
+  - https://docs.docker.com/compose/install/linux/
+
+### Minimal Ubuntu install flow
+
+Docker's official Ubuntu setup ends with these Docker packages installed:
+
+```bash
+sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
+
+For normal non-root use:
+
+```bash
+sudo usermod -aG docker $USER
+newgrp docker
+docker info
+docker compose version
+```
+
+If `xhost` is missing:
+
+```bash
+sudo apt install x11-xserver-utils
+```
+
 ## Quickstart
 
 This is the shortest path from zero to a running demo.
@@ -34,7 +104,7 @@ This is the shortest path from zero to a running demo.
 1. Open a terminal in the project root:
 
 ```bash
-cd ~/Documents/Dockers/Yarpinator
+cd ~/Documents/Dockers/YarpinatorDocker
 ```
 
 2. Build the Docker image once:
@@ -94,13 +164,13 @@ Important current behavior:
 ## Core Concepts
 
 `Docker image`
-: the built environment defined by [Dockerfile](/home/bmaacaron-iit.local/Documents/Dockers/Yarpinator/Dockerfile)
+: the built environment defined by [Dockerfile](/home/bmaacaron-iit.local/Documents/Dockers/YarpinatorDocker/Dockerfile)
 
 `Docker container`
 : the running instance of that image
 
 `docker compose`
-: the runtime definition in [compose.yaml](/home/bmaacaron-iit.local/Documents/Dockers/Yarpinator/compose.yaml)
+: the runtime definition in [compose.yaml](/home/bmaacaron-iit.local/Documents/Dockers/YarpinatorDocker/compose.yaml)
 
 `bind mount`
 : a host folder exposed directly inside the container without copying it into the image
@@ -116,7 +186,7 @@ Important current behavior:
 
 ## How This Stack Works
 
-The runtime defined in [compose.yaml](/home/bmaacaron-iit.local/Documents/Dockers/Yarpinator/compose.yaml) does five important things:
+The runtime defined in [compose.yaml](/home/bmaacaron-iit.local/Documents/Dockers/YarpinatorDocker/compose.yaml) does five important things:
 
 1. builds and runs a single `robotology` container
 2. shares the host network with `network_mode: host`
@@ -124,7 +194,7 @@ The runtime defined in [compose.yaml](/home/bmaacaron-iit.local/Documents/Docker
 4. mounts the user data folder at `/workspace/data`
 5. forwards X11 so GUI programs from the container can open on the host desktop
 
-The helper layer in [common.sh](/home/bmaacaron-iit.local/Documents/Dockers/Yarpinator/scripts/common.sh) standardizes:
+The helper layer in [common.sh](/home/bmaacaron-iit.local/Documents/Dockers/YarpinatorDocker/scripts/common.sh) standardizes:
 
 - Docker availability checks
 - Compose calls with the current host `UID` and `GID`
@@ -132,14 +202,14 @@ The helper layer in [common.sh](/home/bmaacaron-iit.local/Documents/Dockers/Yarp
 - `yarpserver` startup and detection
 - GUI launcher behavior
 
-The container entrypoint in [container-entrypoint.sh](/home/bmaacaron-iit.local/Documents/Dockers/Yarpinator/container-scripts/container-entrypoint.sh) remaps the internal `robotology` user to the current host user’s numeric `UID` and `GID` at container start. That helps avoid file ownership problems on bind-mounted folders.
+The container entrypoint in [container-entrypoint.sh](/home/bmaacaron-iit.local/Documents/Dockers/YarpinatorDocker/container-scripts/container-entrypoint.sh) remaps the internal `robotology` user to the current host user’s numeric `UID` and `GID` at container start. That helps avoid file ownership problems on bind-mounted folders.
 
 ## Configuration
 
 The operator-facing configuration lives in:
 
-- [`.env.example`](/home/bmaacaron-iit.local/Documents/Dockers/Yarpinator/.env.example)
-- [`.env`](/home/bmaacaron-iit.local/Documents/Dockers/Yarpinator/.env)
+- [`.env.example`](/home/bmaacaron-iit.local/Documents/Dockers/YarpinatorDocker/.env.example)
+- [`.env`](/home/bmaacaron-iit.local/Documents/Dockers/YarpinatorDocker/.env)
 
 The most important values are:
 
@@ -180,7 +250,7 @@ This is the simplest workflow if you want operator-style commands without enteri
 ./scripts/build.sh
 ```
 
-Builds the Docker image from [Dockerfile](/home/bmaacaron-iit.local/Documents/Dockers/Yarpinator/Dockerfile).
+Builds the Docker image from [Dockerfile](/home/bmaacaron-iit.local/Documents/Dockers/YarpinatorDocker/Dockerfile).
 
 ### Start the workstation
 
@@ -276,8 +346,8 @@ Launch the manager with:
 
 The manager loads its local applications from:
 
-- [ymanager.ini](/home/bmaacaron-iit.local/Documents/Dockers/Yarpinator/yarpmanager/ymanager.ini)
-- [applications/](/home/bmaacaron-iit.local/Documents/Dockers/Yarpinator/yarpmanager/applications)
+- [ymanager.ini](/home/bmaacaron-iit.local/Documents/Dockers/YarpinatorDocker/yarpmanager/ymanager.ini)
+- [applications/](/home/bmaacaron-iit.local/Documents/Dockers/YarpinatorDocker/yarpmanager/applications)
 
 The currently configured applications are:
 
@@ -298,7 +368,7 @@ What they mean:
 - `YARP View`
   - opens the generic `yarpview` GUI
 - `VFramer`
-  - opens `vFramer` using the default source in [defaults.env](/home/bmaacaron-iit.local/Documents/Dockers/Yarpinator/yarpmanager/defaults.env)
+  - opens `vFramer` using the default source in [defaults.env](/home/bmaacaron-iit.local/Documents/Dockers/YarpinatorDocker/yarpmanager/defaults.env)
 - `All Tools`
   - opens the four generic tools together
   - does not auto-load a dataset
@@ -443,7 +513,7 @@ Check:
 
 Edit:
 
-[defaults.env](/home/bmaacaron-iit.local/Documents/Dockers/Yarpinator/yarpmanager/defaults.env)
+[defaults.env](/home/bmaacaron-iit.local/Documents/Dockers/YarpinatorDocker/yarpmanager/defaults.env)
 
 Change:
 
@@ -457,7 +527,7 @@ The generic `VFramer` launcher and the generic `All Tools` manager app both use 
 
 Update:
 
-[`.env`](/home/bmaacaron-iit.local/Documents/Dockers/Yarpinator/.env)
+[`.env`](/home/bmaacaron-iit.local/Documents/Dockers/YarpinatorDocker/.env)
 
 Then re-apply the runtime:
 

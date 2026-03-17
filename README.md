@@ -1,4 +1,4 @@
-# Yarpinator
+# PRIMI IIT Dockerized YARP + Event-Driven Workstation
 
 This project provides a Dockerized `YARP` + `event-driven` workstation with:
 
@@ -102,7 +102,7 @@ This is the shortest path from zero to a running demo.
 1. Open a terminal in the project root:
 
 ```bash
-cd ~/Documents/Dockers/YarpinatorDocker
+cd ~/Documents/Dockers/PRIMI_IIT_Docker
 ```
 
 2. Build the image once:

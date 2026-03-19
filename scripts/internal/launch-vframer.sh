@@ -10,4 +10,4 @@ fi
 
 VFRAMER_SRC="${VFRAMER_SRC:-/zynqGrabber/left/AE:o}"
 
-exec vFramer --src "$VFRAMER_SRC" "$@"
+exec vFramer --src "$VFRAMER_SRC" "$@" --height 480 --width 640

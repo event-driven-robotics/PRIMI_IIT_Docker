@@ -75,6 +75,12 @@ cd ~/Documents/Dockers/PRIMI_IIT_Docker
 ./scripts/build.sh
 ```
 
+Check the configured build refs and the currently installed container versions:
+
+```bash
+./scripts/show-versions.sh
+```
+
 If your repository owner has already published a GHCR image for this project, they may give you a pull-first path instead of a local build. This guide keeps the local build as the default operator workflow.
 
 Pull-first alternative:
@@ -239,6 +245,19 @@ Useful commands inside the container:
 yarp check
 yarp detect
 yarp name list
+```
+
+From the host, the quickest combined version check is:
+
+```bash
+./scripts/show-versions.sh
+```
+
+If you change `YCM_VERSION`, `YARP_VERSION`, `ED_VERSION`, or `ED_COMMIT`, rebuild the image before expecting the installed versions to change:
+
+```bash
+./scripts/build.sh
+./scripts/start-workstation.sh
 ```
 
 ## Important Behavior

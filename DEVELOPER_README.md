@@ -86,6 +86,7 @@ The most important values are:
 - `YCM_VERSION`
 - `YARP_VERSION`
 - `ED_VERSION`
+- `ED_COMMIT`
 
 ### `BASE_IMAGE`
 
@@ -99,6 +100,12 @@ FROM ${BASE_IMAGE}
 and [compose.yaml](compose.yaml) passes that through as a build arg.
 
 This keeps Ubuntu 22.04 compatibility while avoiding anonymous Docker Hub pull-rate limits by default.
+
+### `ED_VERSION` And `ED_COMMIT`
+
+`event-driven` now tracks the upstream `main` branch name through `ED_VERSION`, and the Dockerfile verifies that checkout against `ED_COMMIT`.
+
+Update both together when you intentionally refresh to a newer upstream snapshot.
 
 ### `vFramer` Defaults
 

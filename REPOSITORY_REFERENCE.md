@@ -37,6 +37,7 @@ These are the main scripts people are expected to run from the host machine.
 | [scripts/start-workstation.sh](scripts/start-workstation.sh) | Starts the container if needed, ensures `yarpserver` is up, and exits once the workstation is ready. |
 | [scripts/start-yarpserver.sh](scripts/start-yarpserver.sh) | Ensures `yarpserver` is running inside the already-started container. It is safe to call repeatedly. |
 | [scripts/status.sh](scripts/status.sh) | Shows the Compose service status and reports whether the YARP name server is currently detectable inside the container. |
+| [scripts/show-versions.sh](scripts/show-versions.sh) | Prints the configured build refs and, when the container is running, the installed `YARP` and `event-driven` versions from inside the image. |
 | [scripts/stop-workstation.sh](scripts/stop-workstation.sh) | Stops and removes the Compose-managed container with `docker compose down`. |
 | [scripts/shell.sh](scripts/shell.sh) | Opens an interactive shell inside the running container as the `robotology` user. |
 | [scripts/list-data.sh](scripts/list-data.sh) | Prints the mounted container data path and lists the contents of `/workspace/data`. Useful for checking that the host dataset mount is correct. |

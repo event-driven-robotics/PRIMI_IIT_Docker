@@ -5,9 +5,10 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 ARG CODE_DIR=/usr/local/src
 ARG BASE_IMAGE
-ARG YCM_VERSION=v0.15.2
-ARG YARP_VERSION=v3.8.0
-ARG ED_VERSION=master
+ARG YCM_VERSION=v0.18.4
+ARG YARP_VERSION=v3.12.2
+ARG ED_VERSION=main
+ARG ED_COMMIT=bf0a4d71c1013d2bbdf911d0ba88678ce3909ae8
 
 RUN apt-get update && apt-get install -y \
     ca-certificates \
@@ -56,7 +57,7 @@ RUN echo "deb [arch=amd64 trusted=yes] https://apt.prophesee.ai/dists/public/bai
     && apt-get install -y metavision-sdk \
     && rm -rf /var/lib/apt/lists/*
 
-RUN git clone --depth 1 --branch "${YCM_VERSION}" https://github.com/robotology/ycm.git "${CODE_DIR}/ycm" \
+RUN git clone --depth 1 --branch "${YCM_VERSION}" https://github.com/robotology/ycm-cmake-modules.git "${CODE_DIR}/ycm" \
     && cmake -S "${CODE_DIR}/ycm" -B "${CODE_DIR}/ycm/build" \
     && cmake --build "${CODE_DIR}/ycm/build" -j"$(nproc)" \
     && cmake --install "${CODE_DIR}/ycm/build"
@@ -68,6 +69,7 @@ RUN git clone --depth 1 --branch "${YARP_VERSION}" https://github.com/robotology
     && yarp check
 
 RUN git clone --depth 1 --branch "${ED_VERSION}" https://github.com/robotology/event-driven.git "${CODE_DIR}/event-driven" \
+    && test "$(git -C "${CODE_DIR}/event-driven" rev-parse HEAD)" = "${ED_COMMIT}" \
     && cmake -S "${CODE_DIR}/event-driven" -B "${CODE_DIR}/event-driven/build" \
     && cmake --build "${CODE_DIR}/event-driven/build" -j"$(nproc)" \
     && cmake --install "${CODE_DIR}/event-driven/build"

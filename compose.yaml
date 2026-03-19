@@ -4,6 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
+        BASE_IMAGE: ${BASE_IMAGE:-public.ecr.aws/ubuntu/ubuntu:22.04}
         YCM_VERSION: ${YCM_VERSION:-v0.15.2}
         YARP_VERSION: ${YARP_VERSION:-v3.8.0}
         ED_VERSION: ${ED_VERSION:-master}

@@ -25,6 +25,17 @@ compose_cmd() {
 
 compose_exec() {
     compose_cmd exec \
+        -T \
+        -u "$CONTAINER_USER" \
+        -e HOME="$CONTAINER_HOME" \
+        -e USER="$CONTAINER_USER" \
+        -e LOGNAME="$CONTAINER_USER" \
+        "$COMPOSE_SERVICE" \
+        "$@"
+}
+
+compose_exec_tty() {
+    compose_cmd exec \
         -u "$CONTAINER_USER" \
         -e HOME="$CONTAINER_HOME" \
         -e USER="$CONTAINER_USER" \
@@ -67,17 +78,21 @@ ensure_container_running() {
     compose_cmd up -d
 }
 
+yarpserver_detected() {
+    compose_exec bash -lc 'timeout 2 yarp detect >/dev/null 2>&1'
+}
+
 ensure_yarpserver() {
     ensure_container_running
 
-    if compose_exec yarp detect >/dev/null 2>&1; then
+    if yarpserver_detected; then
         return 0
     fi
 
     compose_exec_detached start-yarpserver
 
     for _ in 1 2 3 4 5; do
-        if compose_exec yarp detect >/dev/null 2>&1; then
+        if yarpserver_detected; then
             return 0
         fi
         sleep 1

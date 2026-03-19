@@ -1,8 +1,10 @@
-FROM ubuntu:jammy
+ARG BASE_IMAGE=public.ecr.aws/ubuntu/ubuntu:22.04
+FROM ${BASE_IMAGE}
 
 ENV DEBIAN_FRONTEND=noninteractive
 
 ARG CODE_DIR=/usr/local/src
+ARG BASE_IMAGE
 ARG YCM_VERSION=v0.15.2
 ARG YARP_VERSION=v3.8.0
 ARG ED_VERSION=master

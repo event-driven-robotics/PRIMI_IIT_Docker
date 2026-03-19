@@ -7,8 +7,7 @@
     <author email="">Codex</author>
   </authors>
   <module>
-    <name>bash</name>
-    <parameters>-lc "./yarpmanager/bin/launch-yarpview.sh"</parameters>
+    <name>yarpview</name>
     <node>localhost</node>
     <workdir>/workspace/project</workdir>
     <display>--visible_na</display>

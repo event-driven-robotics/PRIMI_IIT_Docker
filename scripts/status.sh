@@ -12,7 +12,7 @@ echo
 
 if compose_cmd ps --status running --services | grep -qx "$COMPOSE_SERVICE"; then
     echo "YARP name server:"
-    if compose_exec yarp detect >/dev/null 2>&1; then
+    if yarpserver_detected; then
         echo "  detected"
     else
         echo "  not detected"

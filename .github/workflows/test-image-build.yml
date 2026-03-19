@@ -1,0 +1,44 @@
+name: Test image build
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  build-and-smoke-test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          load: true
+          tags: primi-iit-docker:test
+          platforms: linux/amd64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Smoke test installed tools
+        run: |
+          docker run --rm --entrypoint bash primi-iit-docker:test -lc '
+            set -euo pipefail
+            command -v yarp >/dev/null
+            command -v yarpmanager >/dev/null
+            command -v yarpview >/dev/null
+            command -v yarpscope >/dev/null
+            command -v yarpdataplayer >/dev/null
+            command -v vFramer >/dev/null
+            command -v start-yarpserver >/dev/null
+            command -v container-entrypoint >/dev/null
+            yarp check
+          '

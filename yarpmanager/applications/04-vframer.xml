@@ -7,8 +7,8 @@
     <author email="">Codex</author>
   </authors>
   <module>
-    <name>bash</name>
-    <parameters>-lc "./yarpmanager/bin/launch-vframer.sh"</parameters>
+    <name>vFramer</name>
+    <parameters>--src /zynqGrabber/left/AE:o</parameters>
     <node>localhost</node>
     <workdir>/workspace/project</workdir>
     <display>--visible_na</display>

@@ -17,7 +17,7 @@ ensure_yarpserver
 launch_demo_tool() {
     local selected_session="$1"
 
-    compose_exec_detached bash -lc 'cd /workspace/project && exec ./yarpmanager/bin/launch-ballbalance-demo.sh "$@"' bash "$selected_session"
+    compose_exec_detached bash -lc 'cd /workspace/project && exec ./scripts/internal/launch-ballbalance-demo.sh "$@"' bash "$selected_session"
 }
 
 launch_demo_tool "$session"

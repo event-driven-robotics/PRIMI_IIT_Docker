@@ -8,6 +8,6 @@ if [[ -f "$DEFAULTS_FILE" ]]; then
     source "$DEFAULTS_FILE"
 fi
 
-VFRAMER_SRC="${VFRAMER_SRC:-/event_camera/events:o}"
+VFRAMER_SRC="${VFRAMER_SRC:-/zynqGrabber/left/AE:o}"
 
 exec vFramer --src "$VFRAMER_SRC" "$@"

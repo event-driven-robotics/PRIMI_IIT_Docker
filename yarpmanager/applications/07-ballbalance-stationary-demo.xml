@@ -7,8 +7,8 @@
     <author email="">Codex</author>
   </authors>
   <module>
-    <name>bash</name>
-    <parameters>-lc "./yarpmanager/bin/launch-ballbalance-demo.sh stationary"</parameters>
+    <name>yarpdataplayer</name>
+    <parameters>--dataset /workspace/data/BallBalance/test_stationary --add_prefix</parameters>
     <node>localhost</node>
     <workdir>/workspace/project</workdir>
     <display>--visible_na</display>
@@ -16,4 +16,48 @@
       <wait when="start">2.0</wait>
     </ensure>
   </module>
+  <module>
+    <name>yarpview</name>
+    <parameters>--name /ballbalance_stationary/yarpview/img:i</parameters>
+    <node>localhost</node>
+    <workdir>/workspace/project</workdir>
+    <display>--visible_na</display>
+    <dependencies>
+      <port timeout="10.0">/yarpdataplayer/grabber</port>
+    </dependencies>
+    <ensure>
+      <wait when="start">2.0</wait>
+    </ensure>
+  </module>
+  <module>
+    <name>yarpscope</name>
+    <parameters>--remote /yarpdataplayer/icub/right_arm/state:o --carrier tcp</parameters>
+    <node>localhost</node>
+    <workdir>/workspace/project</workdir>
+    <display>--visible_na</display>
+    <dependencies>
+      <port timeout="10.0">/yarpdataplayer/icub/right_arm/state:o</port>
+    </dependencies>
+    <ensure>
+      <wait when="start">2.0</wait>
+    </ensure>
+  </module>
+  <module>
+    <name>vFramer</name>
+    <parameters>--name /ballbalance_stationary/vframer --src /yarpdataplayer/zynqGrabber/left/AE:o</parameters>
+    <node>localhost</node>
+    <workdir>/workspace/project</workdir>
+    <display>--visible_na</display>
+    <dependencies>
+      <port timeout="10.0">/yarpdataplayer/zynqGrabber/left/AE:o</port>
+    </dependencies>
+    <ensure>
+      <wait when="start">2.0</wait>
+    </ensure>
+  </module>
+  <connection>
+    <from>/yarpdataplayer/grabber</from>
+    <to>/ballbalance_stationary/yarpview/img:i</to>
+    <protocol>tcp</protocol>
+  </connection>
 </application>

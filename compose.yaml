@@ -5,9 +5,10 @@ services:
       dockerfile: Dockerfile
       args:
         BASE_IMAGE: ${BASE_IMAGE:-public.ecr.aws/ubuntu/ubuntu:22.04}
-        YCM_VERSION: ${YCM_VERSION:-v0.15.2}
-        YARP_VERSION: ${YARP_VERSION:-v3.8.0}
-        ED_VERSION: ${ED_VERSION:-master}
+        YCM_VERSION: ${YCM_VERSION:-v0.18.4}
+        YARP_VERSION: ${YARP_VERSION:-v3.12.2}
+        ED_VERSION: ${ED_VERSION:-main}
+        ED_COMMIT: ${ED_COMMIT:-bf0a4d71c1013d2bbdf911d0ba88678ce3909ae8}
     container_name: robotology-dev
     command: ["bash", "-lc", "sleep infinity"]
     privileged: true

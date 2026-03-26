@@ -56,3 +56,23 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Summarize published image
+        run: |
+          {
+            echo "## Published image"
+            echo
+            echo "- Package: \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}\`"
+            echo "- Workflow run: \`${{ github.workflow }}\`"
+            echo
+            echo "### Published tags"
+            while IFS= read -r tag; do
+              [[ -n "$tag" ]] || continue
+              echo "- \`$tag\`"
+            done <<< "${{ steps.meta.outputs.tags }}"
+            echo
+            echo "### Visibility note"
+            echo "- GHCR package visibility is controlled in GitHub Packages settings, not by this workflow alone."
+            echo "- If the package is still private after publish, open the package page on GitHub and change its visibility to Public."
+            echo "- If this repository is private, GitHub may keep the package inheriting repository access by default; remove inherited permissions on the package, or disable automatic inheritance for new org packages, before expecting a public package."
+          } >> "$GITHUB_STEP_SUMMARY"

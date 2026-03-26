@@ -89,7 +89,7 @@ ensure_yarpserver() {
         return 0
     fi
 
-    compose_exec_detached start-yarpserver
+    compose_exec_detached bash -lc 'exec /workspace/project/container-scripts/start-yarpserver.sh'
 
     for _ in 1 2 3 4 5; do
         if yarpserver_detected; then

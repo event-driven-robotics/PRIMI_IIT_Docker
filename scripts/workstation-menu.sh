@@ -11,7 +11,8 @@ actions=(
     "Run BallBalance stationary demo"
     "Open yarpview"
     "Open yarpscope"
-    "Open vFramer"
+    "Open vFramer Left"
+    "Open vFramer Right"
     "Open yarpdataplayer"
     "Stop demo tools only"
     "List mounted data"
@@ -31,13 +32,14 @@ select action in "${actions[@]}"; do
         5) "$SCRIPT_DIR/demo-ballbalance-stationary.sh" ;;
         6) "$SCRIPT_DIR/open-yarpview.sh" ;;
         7) "$SCRIPT_DIR/open-yarpscope.sh" ;;
-        8) "$SCRIPT_DIR/open-vframer.sh" ;;
-        9) "$SCRIPT_DIR/open-dataplayer.sh" ;;
-        10) "$SCRIPT_DIR/stop-demo.sh" ;;
-        11) "$SCRIPT_DIR/list-data.sh" ;;
-        12) "$SCRIPT_DIR/shell.sh" ;;
-        13) "$SCRIPT_DIR/stop-workstation.sh" ;;
-        14) exit 0 ;;
+        8) "$SCRIPT_DIR/open-vframer.sh" left ;;
+        9) "$SCRIPT_DIR/open-vframer.sh" right ;;
+        10) "$SCRIPT_DIR/open-dataplayer.sh" ;;
+        11) "$SCRIPT_DIR/stop-demo.sh" ;;
+        12) "$SCRIPT_DIR/list-data.sh" ;;
+        13) "$SCRIPT_DIR/shell.sh" ;;
+        14) "$SCRIPT_DIR/stop-workstation.sh" ;;
+        15) exit 0 ;;
         *) echo "Invalid choice." >&2 ;;
     esac
 done

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <application>
   <name>All Tools</name>
-  <description>Launch YARP Data Player, YARP Scope, YARP View, and VFramer together.</description>
+  <description>Launch YARP Data Player, YARP Scope, YARP View, and both VFramer viewers together.</description>
   <version>1.0</version>
   <authors>
     <author email="">Codex</author>
@@ -35,7 +35,17 @@
   </module>
   <module>
     <name>vFramer</name>
-    <parameters>--src /zynqGrabber/left/AE:o</parameters>
+    <parameters>--name /vframer/left --src /zynqGrabber/left/AE:o --width 640 --height 480</parameters>
+    <node>localhost</node>
+    <workdir>/workspace/project</workdir>
+    <display>--visible_na</display>
+    <ensure>
+      <wait when="start">2.0</wait>
+    </ensure>
+  </module>
+  <module>
+    <name>vFramer</name>
+    <parameters>--name /vframer/right --src /zynqGrabber/right/AE:o --width 640 --height 480</parameters>
     <node>localhost</node>
     <workdir>/workspace/project</workdir>
     <display>--visible_na</display>

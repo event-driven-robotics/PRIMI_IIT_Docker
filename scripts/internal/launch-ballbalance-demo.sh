@@ -33,7 +33,10 @@ pids+=("$!")
 "$SCRIPT_DIR/launch-ballbalance-tool.sh" "$session" yarpscope &
 pids+=("$!")
 
-"$SCRIPT_DIR/launch-ballbalance-tool.sh" "$session" vframer &
+"$SCRIPT_DIR/launch-ballbalance-tool.sh" "$session" vframer-left &
+pids+=("$!")
+
+"$SCRIPT_DIR/launch-ballbalance-tool.sh" "$session" vframer-right &
 pids+=("$!")
 
 wait "${pids[@]}"

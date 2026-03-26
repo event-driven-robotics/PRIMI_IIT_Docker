@@ -44,12 +44,25 @@
   </module>
   <module>
     <name>vFramer</name>
-    <parameters>--name /ballbalance_stationary/vframer --src /yarpdataplayer/zynqGrabber/left/AE:o</parameters>
+    <parameters>--name /ballbalance_stationary/vframer/left --src /yarpdataplayer/zynqGrabber/left/AE:o --width 640 --height 480</parameters>
     <node>localhost</node>
     <workdir>/workspace/project</workdir>
     <display>--visible_na</display>
     <dependencies>
       <port timeout="10.0">/yarpdataplayer/zynqGrabber/left/AE:o</port>
+    </dependencies>
+    <ensure>
+      <wait when="start">2.0</wait>
+    </ensure>
+  </module>
+  <module>
+    <name>vFramer</name>
+    <parameters>--name /ballbalance_stationary/vframer/right --src /yarpdataplayer/zynqGrabber/right/AE:o --width 640 --height 480</parameters>
+    <node>localhost</node>
+    <workdir>/workspace/project</workdir>
+    <display>--visible_na</display>
+    <dependencies>
+      <port timeout="10.0">/yarpdataplayer/zynqGrabber/right/AE:o</port>
     </dependencies>
     <ensure>
       <wait when="start">2.0</wait>

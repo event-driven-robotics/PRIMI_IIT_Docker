@@ -109,12 +109,22 @@ Update both together when you intentionally refresh to a newer upstream snapshot
 
 ### `vFramer` Defaults
 
-There are intentionally two configuration points now, because there are still two real launch engines:
+There are intentionally three configuration points now, because there are still two real launch engines and two event streams:
 
-- `yarpmanager` `VFramer` app: [04-vframer.xml](yarpmanager/applications/04-vframer.xml)
-- script-based `vFramer` launcher: [defaults.env](yarpmanager/defaults.env)
+- `yarpmanager` `VFramer Left` app: [04-vframer-left.xml](yarpmanager/applications/04-vframer-left.xml)
+- `yarpmanager` `VFramer Right` app: [04-vframer-right.xml](yarpmanager/applications/04-vframer-right.xml)
+- script-based `vFramer` launcher defaults: [defaults.env](yarpmanager/defaults.env)
 
 Keep them aligned when changing defaults.
+
+The shared `vFramer` defaults now cover:
+
+- left source
+- right source
+- left name
+- right name
+- width
+- height
 
 ## Developer Workflows
 
@@ -159,7 +169,8 @@ The generic `yarpmanager` applications are direct-launch only:
 - [01-yarp-data-player.xml](yarpmanager/applications/01-yarp-data-player.xml)
 - [02-yarp-scope.xml](yarpmanager/applications/02-yarp-scope.xml)
 - [03-yarp-view.xml](yarpmanager/applications/03-yarp-view.xml)
-- [04-vframer.xml](yarpmanager/applications/04-vframer.xml)
+- [04-vframer-left.xml](yarpmanager/applications/04-vframer-left.xml)
+- [04-vframer-right.xml](yarpmanager/applications/04-vframer-right.xml)
 - [05-all-tools.xml](yarpmanager/applications/05-all-tools.xml)
 
 ### BallBalance
@@ -282,7 +293,28 @@ docker compose pull
 1. Push this repository to GitHub with Actions enabled.
 2. Run the workflow once manually or push to `main` / `master` / a `v*` tag.
 3. Confirm the GHCR package appears under the repository owner namespace.
-4. Set the GHCR package visibility to public if you want anonymous pulls.
+4. Make the GHCR package public if you want anonymous pulls.
+
+### Making The GHCR Package Public
+
+GitHub does not provide a repo-only switch in this workflow that guarantees the published GHCR package becomes public automatically.
+
+What GitHub documents today is:
+
+- the Container registry defaults a newly published package to private
+- public container packages allow anonymous pulls
+- packages linked to a repository inherit that repository's access permissions by default
+
+That means the exact public path depends on where the repository lives:
+
+- personal account repository:
+  open the package on GitHub, go to `Package settings`, and change visibility to `Public`
+- organization repository:
+  either change the package visibility to `Public` after the first publish, or have an org owner set the default package creation visibility to `Public`
+- private repository publishing to GHCR:
+  if the package inherits access from the private source repository, remove inherited permissions on the package first, or disable automatic inheritance for new packages at the organization level, then set the package visibility to `Public`
+
+Once a GHCR package is made public, GitHub warns that it cannot be made private again.
 
 ### Workflow Files
 
@@ -413,6 +445,7 @@ GitHub workflow checks:
 8. Confirm the expected tags exist: `latest` on the default branch, branch tags like `main`, release tags like `v1.0.0`, and `sha-...`.
 9. Confirm both workflows use the Dockerfile in the repo root and build `linux/amd64`.
 10. Confirm later runs reuse the GitHub Actions cache instead of rebuilding every layer from scratch.
+11. Confirm the workflow summary includes the package name, published tags, and the GHCR visibility reminder.
 
 GHCR pull checks:
 

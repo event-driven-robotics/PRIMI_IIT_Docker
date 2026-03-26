@@ -24,10 +24,14 @@ esac
 # yarpdataplayer publishes replay outputs under its fixed /yarpdataplayer prefix.
 player_prefix="/yarpdataplayer"
 rgb_remote="${player_prefix}/grabber"
-events_remote="${player_prefix}/zynqGrabber/left/AE:o"
+left_events_remote="${player_prefix}/zynqGrabber/left/AE:o"
+right_events_remote="${player_prefix}/zynqGrabber/right/AE:o"
 encoders_remote="${player_prefix}/icub/right_arm/state:o"
 view_local="${local_prefix}/yarpview/img:i"
-vframer_name="${local_prefix}/vframer"
+vframer_left_name="${local_prefix}/vframer/left"
+vframer_right_name="${local_prefix}/vframer/right"
+vframer_width="640"
+vframer_height="480"
 
 wait_for_port() {
     local port="$1"
@@ -103,9 +107,13 @@ case "$tool" in
         wait_for_port "$encoders_remote"
         exec yarpscope --remote "$encoders_remote" --carrier tcp --title "$label Right Arm Encoders"
         ;;
-    vframer)
-        wait_for_port "$events_remote"
-        exec vFramer --name "$vframer_name" --src "$events_remote"
+    vframer-left)
+        wait_for_port "$left_events_remote"
+        exec vFramer --name "$vframer_left_name" --src "$left_events_remote" --width "$vframer_width" --height "$vframer_height"
+        ;;
+    vframer-right)
+        wait_for_port "$right_events_remote"
+        exec vFramer --name "$vframer_right_name" --src "$right_events_remote" --width "$vframer_width" --height "$vframer_height"
         ;;
     *)
         echo "Unknown tool: $tool" >&2

@@ -115,7 +115,8 @@ What opens:
 - `yarpdataplayer`
 - `yarpview`
 - `yarpscope`
-- `vFramer`
+- `vFramer Left`
+- `vFramer Right`
 
 ## Main Ways To Use It
 
@@ -174,7 +175,8 @@ Open generic tools:
 ./scripts/open-manager.sh
 ./scripts/open-yarpview.sh
 ./scripts/open-yarpscope.sh
-./scripts/open-vframer.sh
+./scripts/open-vframer.sh left
+./scripts/open-vframer.sh right
 ./scripts/open-dataplayer.sh
 ```
 
@@ -210,7 +212,8 @@ Configured applications:
 - `YARP Data Player`
 - `YARP Scope`
 - `YARP View`
-- `VFramer`
+- `VFramer Left`
+- `VFramer Right`
 - `All Tools`
 - `BallBalance Moving Demo`
 - `BallBalance Stationary Demo`
@@ -220,10 +223,11 @@ What they mean:
 - `YARP Data Player`: opens the generic `yarpdataplayer` GUI
 - `YARP Scope`: opens the generic `yarpscope` GUI
 - `YARP View`: opens the generic `yarpview` GUI
-- `VFramer`: opens `vFramer` using the default source configured in [04-vframer.xml](yarpmanager/applications/04-vframer.xml)
-- `All Tools`: opens the four generic tools together and does not auto-load a dataset
-- `BallBalance Moving Demo`: auto-loads `test_moving` and opens the three matching viewers directly in `yarpmanager`
-- `BallBalance Stationary Demo`: auto-loads `test_stationary` and opens the three matching viewers directly in `yarpmanager`
+- `VFramer Left`: opens `vFramer` using the left source configured in [04-vframer-left.xml](yarpmanager/applications/04-vframer-left.xml)
+- `VFramer Right`: opens `vFramer` using the right source configured in [04-vframer-right.xml](yarpmanager/applications/04-vframer-right.xml)
+- `All Tools`: opens the generic tools together, including both `vFramer` viewers, and does not auto-load a dataset
+- `BallBalance Moving Demo`: auto-loads `test_moving` and opens the four matching viewers directly in `yarpmanager`
+- `BallBalance Stationary Demo`: auto-loads `test_stationary` and opens the four matching viewers directly in `yarpmanager`
 
 If you want to stop a manager-launched BallBalance session from the CLI, use:
 
@@ -274,7 +278,8 @@ If you change `YCM_VERSION`, `YARP_VERSION`, `ED_VERSION`, or `ED_COMMIT`, rebui
 | `yarpdataplayer` | `/workspace/data/BallBalance/test_moving` or `/workspace/data/BallBalance/test_stationary` | replays the recorded session |
 | `yarpview` | `/yarpdataplayer/grabber` | shows the RGB camera stream |
 | `yarpscope` | `/yarpdataplayer/icub/right_arm/state:o` | plots the right-arm encoder stream |
-| `vFramer` | `/yarpdataplayer/zynqGrabber/left/AE:o` | visualizes the event-camera stream |
+| `vFramer Left` | `/yarpdataplayer/zynqGrabber/left/AE:o` | visualizes the left event-camera stream |
+| `vFramer Right` | `/yarpdataplayer/zynqGrabber/right/AE:o` | visualizes the right event-camera stream |
 
 ## Troubleshooting
 
@@ -297,16 +302,25 @@ If no GUI window appears, check:
 - you are running from a desktop session
 - the X11 socket mount exists at `/tmp/.X11-unix`
 
-If the `yarpmanager` `VFramer` application needs a different default source, edit [04-vframer.xml](yarpmanager/applications/04-vframer.xml):
+If the `yarpmanager` `VFramer Left` application needs a different default source, edit [04-vframer-left.xml](yarpmanager/applications/04-vframer-left.xml):
 
 ```xml
-<parameters>--src /zynqGrabber/left/AE:o</parameters>
+<parameters>--name /vframer/left --src /zynqGrabber/left/AE:o --width 640 --height 480</parameters>
 ```
 
-If the script-based `./scripts/open-vframer.sh` launcher needs a different default source, edit [defaults.env](yarpmanager/defaults.env):
+If the `yarpmanager` `VFramer Right` application needs a different default source, edit [04-vframer-right.xml](yarpmanager/applications/04-vframer-right.xml):
+
+```xml
+<parameters>--name /vframer/right --src /zynqGrabber/right/AE:o --width 640 --height 480</parameters>
+```
+
+If the script-based `./scripts/open-vframer.sh` launcher needs different default source or size settings, edit [defaults.env](yarpmanager/defaults.env):
 
 ```bash
-VFRAMER_SRC=/zynqGrabber/left/AE:o
+VFRAMER_LEFT_SRC=/zynqGrabber/left/AE:o
+VFRAMER_RIGHT_SRC=/zynqGrabber/right/AE:o
+VFRAMER_WIDTH=640
+VFRAMER_HEIGHT=480
 ```
 
 If the host data folder changes, update [`.env`](.env) and re-apply the runtime:

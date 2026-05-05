@@ -18,6 +18,7 @@ echo "  YCM: $(extract_build_arg YCM_VERSION)"
 echo "  YARP: $(extract_build_arg YARP_VERSION)"
 echo "  event-driven ref: $(extract_build_arg ED_VERSION)"
 echo "  event-driven commit: $(extract_build_arg ED_COMMIT)"
+echo "  Metavision SDK requested: $(extract_build_arg INSTALL_METAVISION_SDK)"
 echo
 echo "Installed versions:"
 
@@ -33,9 +34,15 @@ set -euo pipefail
 yarp_version="$(yarp version 2>/dev/null | sed -n "s/^YARP version //p")"
 ed_package_version="$(sed -n "s/^set(PACKAGE_VERSION \"\\(.*\\)\")/\\1/p" /usr/local/lib/cmake/event-driven/event-driven-config-version.cmake 2>/dev/null || true)"
 ed_source_ref="$(git -c safe.directory=/usr/local/src/event-driven -C /usr/local/src/event-driven log -1 --format="%H %cs %s" 2>/dev/null || true)"
+metavision_status="not installed"
+
+if dpkg-query -W -f="\${Status}" metavision-sdk 2>/dev/null | grep -q "install ok installed"; then
+    metavision_status="installed"
+fi
 
 echo "  YARP: ${yarp_version:-unknown}"
 echo "  event-driven package: ${ed_package_version:-unknown}"
+echo "  Metavision SDK: ${metavision_status}"
 
 if [[ -n "${ed_source_ref:-}" ]]; then
     echo "  event-driven source: ${ed_source_ref}"

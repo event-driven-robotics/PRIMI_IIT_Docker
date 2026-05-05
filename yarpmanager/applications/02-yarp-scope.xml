@@ -4,7 +4,7 @@
   <description>Launch the joint/vector plotting GUI.</description>
   <version>1.0</version>
   <authors>
-    <author email="">Codex</author>
+    <author email="">Bear</author>
   </authors>
   <module>
     <name>yarpscope</name>

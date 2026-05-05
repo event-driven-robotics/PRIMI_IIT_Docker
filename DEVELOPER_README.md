@@ -17,7 +17,7 @@ The policy is:
 
 - redundancy in access methods is acceptable
 - hidden implementation layers should not be duplicated unnecessarily
-- `yarpmanager` applications should launch the applications themselves, not `bash` wrappers
+- `yarpmanager` applications should launch the applications themselves unless a shared script carries essential coordination behavior
 - deprecated launch wrappers should be removed when they stop carrying their own behavior
 
 ## Current Architecture
@@ -42,8 +42,8 @@ The policy is:
 There are two real launch engines now:
 
 1. `yarpmanager` XML apps
-   - generic tools and BallBalance demos launch the applications directly
-   - the BallBalance manager apps use native dependencies and connections
+   - generic tools launch the applications directly
+   - the BallBalance manager entry reuses the shared coordinated launcher so it behaves the same way as the menu and CLI
 
 2. script-based internal launchers
    - [launch-ballbalance-demo.sh](scripts/internal/launch-ballbalance-demo.sh)
@@ -87,6 +87,9 @@ The most important values are:
 - `YARP_VERSION`
 - `ED_VERSION`
 - `ED_COMMIT`
+- `INSTALL_METAVISION_SDK`
+- `PROPHESEE_JFROG_USER`
+- `PROPHESEE_JFROG_TOKEN`
 
 ### `BASE_IMAGE`
 
@@ -107,9 +110,50 @@ This keeps Ubuntu 22.04 compatibility while avoiding anonymous Docker Hub pull-r
 
 Update both together when you intentionally refresh to a newer upstream snapshot.
 
-### `vFramer` Defaults
+### `INSTALL_METAVISION_SDK`
 
-There are intentionally three configuration points now, because there are still two real launch engines and two event streams:
+The image now omits Metavision SDK by default.
+
+This is deliberate:
+
+- the BallBalance and generic GUI workflows in this repository use recorded YARP streams and do not need the SDK
+- the older anonymous `apt.prophesee.ai` feed used by upstream historical Dockerfiles is no longer the current documented Prophesee install path
+- the current SDK 5.x package flow requires authenticated JFrog access
+
+If a maintainer or user needs the SDK for live Prophesee camera integration, including upstream tools such as `atis3-bridge`, they can opt in by setting:
+
+- `INSTALL_METAVISION_SDK=1`
+- `PROPHESEE_JFROG_USER=<their Prophesee JFrog login>`
+- `PROPHESEE_JFROG_TOKEN=<their Prophesee JFrog identity token>`
+
+and then rebuilding with:
+
+```bash
+./scripts/build.sh
+```
+
+The Dockerfile follows the current documented JFrog-based install flow only when this opt-in is enabled.
+
+Reference:
+
+- Prophesee Linux SDK installation guide: https://docs.prophesee.ai/stable/installation/linux.html
+
+### Script Defaults
+
+The script launchers read [defaults.env](yarpmanager/defaults.env).
+
+That file now carries:
+
+- `BALLBALANCE_DEMO_TRIAL`
+- `VFRAMER_DEFAULT_SIDE`
+- `VFRAMER_LEFT_SRC`
+- `VFRAMER_RIGHT_SRC`
+- `VFRAMER_LEFT_NAME`
+- `VFRAMER_RIGHT_NAME`
+- `VFRAMER_WIDTH`
+- `VFRAMER_HEIGHT`
+
+There are still three `vFramer` configuration points, because there are still two real launch engines and two event streams:
 
 - `yarpmanager` `VFramer Left` app: [04-vframer-left.xml](yarpmanager/applications/04-vframer-left.xml)
 - `yarpmanager` `VFramer Right` app: [04-vframer-right.xml](yarpmanager/applications/04-vframer-right.xml)
@@ -125,6 +169,8 @@ The shared `vFramer` defaults now cover:
 - right name
 - width
 - height
+
+The BallBalance demo scripts also read `BALLBALANCE_DEMO_TRIAL` from the same file, so switching between `trial_0`, `trial_1`, and `trial_2` is a one-line change.
 
 ## Developer Workflows
 
@@ -175,18 +221,26 @@ The generic `yarpmanager` applications are direct-launch only:
 
 ### BallBalance
 
-BallBalance is intentionally available via two approaches:
+BallBalance is intentionally available through the menu, the direct CLI entrypoint, and `yarpmanager`, but those now share one implementation path.
 
-- script-based demos from the public CLI wrappers
-- direct-launch `yarpmanager` demos
+The public entrypoint is:
 
-Those duplicate some session metadata, but the duplication is currently justified because the script path still carries behavior that the manager path does not:
+```bash
+./scripts/demo-ballbalance.sh
+```
+
+and the manager exposes one `BallBalance Demo` application that runs the same internal coordinator.
+
+This shared path is intentional because the BallBalance launcher carries behavior that is worth centralizing:
 
 - pre-cleanup of matching old GUI/demo tools
 - explicit waits for ports
 - retry logic for connections
+- RGB-port fallback between `/yarpdataplayer/grabber` and `/yarpdataplayer/rgb`
+- trial selection from `BALLBALANCE_DEMO_TRIAL`
+- omission of the RGB replay stream when the selected trial has an empty `rgb/data.log`, because that input currently makes `yarpdataplayer` crash
 
-If this behavior ever gets unified elsewhere, that duplicated session metadata should be reduced.
+The older multi-demo split was removed because the mounted dataset now uses the current trial-based layout, and the supported BallBalance entry is a single demo launcher with a configurable trial.
 
 ## GitHub Distribution
 
@@ -471,7 +525,7 @@ Official GitHub references for the GHCR workflow:
 
 ## Known Limits
 
-- the current image still assumes the Prophesee / Metavision SDK path from the upstream `event-driven` Dockerfile
+- the default image omits Metavision SDK, so Prophesee-specific live camera integration is not available unless a user opts in with valid JFrog credentials
 - the exact live camera vendor is still a hardware-specific unknown
 - scripted BallBalance demos intentionally pre-clean matching GUI/demo tools before launch
 - manager-launched BallBalance demos do not pre-clean matching GUI/demo tools before launch

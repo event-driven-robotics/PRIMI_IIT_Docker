@@ -15,7 +15,7 @@ compose_exec bash -lc '
     pids=()
     while read -r pid comm; do
         case "$comm" in
-            yarpdataplayer|yarpdataplayer-c|yarpview|yarpscope|vFramer)
+            yarpdataplayer|yarpdataplayer-c|yarpview|yarpscope|vFramer|iCubSkinGui)
                 pids+=("$pid")
                 ;;
         esac

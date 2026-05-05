@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<portscope rows="3" columns="1" carrier="tcp">
+    <plot gridx="0" gridy="0" hspan="1" vspan="1" title="Right Arm" size="200" minval="-180" maxval="180">
+        <graph remote="/yarpdataplayer/icub/right_arm/state:o" index="0" color="Red" />
+        <graph remote="/yarpdataplayer/icub/right_arm/state:o" index="1" color="Green" />
+        <graph remote="/yarpdataplayer/icub/right_arm/state:o" index="2" color="Blue" />
+        <graph remote="/yarpdataplayer/icub/right_arm/state:o" index="3" color="DarkRed" />
+        <graph remote="/yarpdataplayer/icub/right_arm/state:o" index="4" color="DarkGreen" />
+        <graph remote="/yarpdataplayer/icub/right_arm/state:o" index="5" color="DarkBlue" />
+        <graph remote="/yarpdataplayer/icub/right_arm/state:o" index="6" color="Cyan" />
+        <graph remote="/yarpdataplayer/icub/right_arm/state:o" index="7" color="Magenta" />
+        <graph remote="/yarpdataplayer/icub/right_arm/state:o" index="8" color="Yellow" />
+        <graph remote="/yarpdataplayer/icub/right_arm/state:o" index="9" color="Goldenrod" />
+        <graph remote="/yarpdataplayer/icub/right_arm/state:o" index="10" color="Orange" />
+        <graph remote="/yarpdataplayer/icub/right_arm/state:o" index="11" color="Purple" />
+        <graph remote="/yarpdataplayer/icub/right_arm/state:o" index="12" color="Brown" />
+        <graph remote="/yarpdataplayer/icub/right_arm/state:o" index="13" color="Pink" />
+        <graph remote="/yarpdataplayer/icub/right_arm/state:o" index="14" color="Lime" />
+        <graph remote="/yarpdataplayer/icub/right_arm/state:o" index="15" color="Teal" />
+    </plot>
+    <plot gridx="0" gridy="1" hspan="1" vspan="1" title="Head" size="200" minval="-180" maxval="180">
+        <graph remote="/yarpdataplayer/icub/head/state:o" index="0" color="Red" />
+        <graph remote="/yarpdataplayer/icub/head/state:o" index="1" color="Green" />
+        <graph remote="/yarpdataplayer/icub/head/state:o" index="2" color="Blue" />
+        <graph remote="/yarpdataplayer/icub/head/state:o" index="3" color="DarkRed" />
+        <graph remote="/yarpdataplayer/icub/head/state:o" index="4" color="DarkGreen" />
+        <graph remote="/yarpdataplayer/icub/head/state:o" index="5" color="DarkBlue" />
+    </plot>
+    <plot gridx="0" gridy="2" hspan="1" vspan="1" title="Torso" size="200" minval="-180" maxval="180">
+        <graph remote="/yarpdataplayer/icub/torso/state:o" index="0" color="Red" />
+        <graph remote="/yarpdataplayer/icub/torso/state:o" index="1" color="Green" />
+        <graph remote="/yarpdataplayer/icub/torso/state:o" index="2" color="Blue" />
+    </plot>
+</portscope>

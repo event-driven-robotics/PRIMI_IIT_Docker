@@ -4,7 +4,7 @@
   <description>Launch YARP Data Player, YARP Scope, YARP View, and both VFramer viewers together.</description>
   <version>1.0</version>
   <authors>
-    <author email="">Codex</author>
+    <author email="">Bear</author>
   </authors>
   <module>
     <name>yarpdataplayer</name>
@@ -26,6 +26,16 @@
   </module>
   <module>
     <name>yarpview</name>
+    <node>localhost</node>
+    <workdir>/workspace/project</workdir>
+    <display>--visible_na</display>
+    <ensure>
+      <wait when="start">2.0</wait>
+    </ensure>
+  </module>
+  <module>
+    <name>iCubSkinGui</name>
+    <parameters>--from right_hand.ini</parameters>
     <node>localhost</node>
     <workdir>/workspace/project</workdir>
     <display>--visible_na</display>

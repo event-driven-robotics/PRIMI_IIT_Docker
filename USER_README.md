@@ -7,7 +7,7 @@ This guide is for operators and users who want to run the workstation, open the 
 - one Dockerized `YARP` + `event-driven` workstation
 - GUI forwarding from the container to the host desktop
 - helper scripts for common tasks
-- `yarpmanager` applications for the generic tools and BallBalance demos
+- `yarpmanager` applications for the generic tools and the BallBalance demo
 
 Inside the container, user data is mounted at:
 
@@ -81,6 +81,8 @@ Check the configured build refs and the currently installed container versions:
 ./scripts/show-versions.sh
 ```
 
+The default image omits Prophesee's Metavision SDK. That is intentional. The documented BallBalance and generic GUI workflows in this repository use recorded YARP streams and do not need the SDK.
+
 If your repository owner has already published a GHCR image for this project, they may give you a pull-first path instead of a local build. This guide keeps the local build as the default operator workflow.
 
 Pull-first alternative:
@@ -103,20 +105,63 @@ If you use that path, make sure your maintainer also tells you how they want [co
 ./scripts/workstation-menu.sh
 ```
 
-5. In the menu, choose `Open yarpmanager`.
-
-6. Inside `yarpmanager`, launch one of:
-
-- `BallBalance Moving Demo`
-- `BallBalance Stationary Demo`
+5. In the menu, choose `Run BallBalance demo`.
 
 What opens:
 
 - `yarpdataplayer`
-- `yarpview`
 - `yarpscope`
 - `vFramer Left`
 - `vFramer Right`
+
+If the selected trial is mounted with an empty `rgb/data.log`, `yarpview` is skipped.
+That recording's `rgb/data.log` is empty, and `yarpdataplayer` crashes on it unless the RGB stream is omitted.
+
+The menu demo loads:
+
+- `/workspace/data/BallBalance/<BALLBALANCE_DEMO_TRIAL>`
+
+Change the selected BallBalance recording in [yarpmanager/defaults.env](yarpmanager/defaults.env):
+
+```bash
+BALLBALANCE_DEMO_TRIAL=trial_2
+```
+
+## Optional Metavision SDK
+
+This repository omits Metavision SDK by default.
+
+What we need it for:
+
+- live Prophesee event-camera integration through the upstream `event-driven` Prophesee bridge tooling such as `atis3-bridge`
+- development work that specifically depends on Prophesee's proprietary SDK packages rather than recorded YARP datasets
+
+What the problem is:
+
+- the old anonymous `apt.prophesee.ai` package feed used by older Dockerfiles is no longer the current documented install path
+- the current Prophesee SDK 5.x Linux install flow uses authenticated access to Prophesee's JFrog server
+- without those credentials, the Docker build either times out against the old feed or cannot install `metavision-sdk`
+
+What still works without it:
+
+- `yarpmanager`
+- `yarpdataplayer`
+- `yarpview`
+- `yarpscope`
+- `vFramer`
+- BallBalance demos based on recorded data under `/workspace/data`
+
+How to include the SDK if you have access:
+
+1. Obtain your Prophesee JFrog credentials by following Prophesee's Linux installation guide for Metavision SDK: https://docs.prophesee.ai/stable/installation/linux.html
+2. Open your local [`.env`](.env) file.
+3. Set `INSTALL_METAVISION_SDK=1`.
+4. Set `PROPHESEE_JFROG_USER` to your Prophesee JFrog login.
+5. Set `PROPHESEE_JFROG_TOKEN` to your Prophesee JFrog identity token.
+6. Rebuild the image with `./scripts/build.sh`.
+7. Run `./scripts/show-versions.sh` after starting the workstation and confirm it reports `Metavision SDK: installed`.
+
+Keep those credentials only in your local [`.env`](.env). Do not commit them.
 
 ## Main Ways To Use It
 
@@ -133,13 +178,14 @@ The menu exposes:
 - workstation start
 - status
 - `yarpmanager`
-- BallBalance moving demo
-- BallBalance stationary demo
+- BallBalance demo
 - each individual GUI tool
 - stop demo only
 - list data
 - shell
 - stop workstation
+
+The menu demo entry loads the trial selected by `BALLBALANCE_DEMO_TRIAL` in [yarpmanager/defaults.env](yarpmanager/defaults.env).
 
 ### CLI Workflow
 
@@ -180,11 +226,10 @@ Open generic tools:
 ./scripts/open-dataplayer.sh
 ```
 
-Run the BallBalance demos:
+Run the BallBalance demo:
 
 ```bash
-./scripts/demo-ballbalance-moving.sh
-./scripts/demo-ballbalance-stationary.sh
+./scripts/demo-ballbalance.sh
 ```
 
 Stop the matching GUI demo tools:
@@ -215,8 +260,9 @@ Configured applications:
 - `VFramer Left`
 - `VFramer Right`
 - `All Tools`
-- `BallBalance Moving Demo`
-- `BallBalance Stationary Demo`
+- `BallBalance Demo`
+
+The BallBalance demo entry loads the trial selected by `BALLBALANCE_DEMO_TRIAL` in [yarpmanager/defaults.env](yarpmanager/defaults.env).
 
 What they mean:
 
@@ -226,8 +272,7 @@ What they mean:
 - `VFramer Left`: opens `vFramer` using the left source configured in [04-vframer-left.xml](yarpmanager/applications/04-vframer-left.xml)
 - `VFramer Right`: opens `vFramer` using the right source configured in [04-vframer-right.xml](yarpmanager/applications/04-vframer-right.xml)
 - `All Tools`: opens the generic tools together, including both `vFramer` viewers, and does not auto-load a dataset
-- `BallBalance Moving Demo`: auto-loads `test_moving` and opens the four matching viewers directly in `yarpmanager`
-- `BallBalance Stationary Demo`: auto-loads `test_stationary` and opens the four matching viewers directly in `yarpmanager`
+- `BallBalance Demo`: runs the coordinated launcher for the trial selected by `BALLBALANCE_DEMO_TRIAL`; if the mounted recording has an empty `rgb/data.log`, it skips `yarpview`
 
 If you want to stop a manager-launched BallBalance session from the CLI, use:
 
@@ -267,16 +312,19 @@ If you change `YCM_VERSION`, `YARP_VERSION`, `ED_VERSION`, or `ED_COMMIT`, rebui
 ## Important Behavior
 
 - BallBalance demos use `yarpdataplayer` replay outputs under `/yarpdataplayer/...`
-- scripted BallBalance demos clean up matching old GUI/demo tools before launching a new session
-- manager-launched BallBalance demos run tools directly and do not pre-clean old GUI/demo tools
+- the BallBalance demo always loads `/workspace/data/BallBalance/<BALLBALANCE_DEMO_TRIAL>`
+- change the selected trial in [yarpmanager/defaults.env](yarpmanager/defaults.env) with `BALLBALANCE_DEMO_TRIAL=trial_0`, `trial_1`, or `trial_2`
+- the menu, CLI, and `yarpmanager` BallBalance entry all reuse the same coordinated launcher
+- the launcher cleans up matching old GUI/demo tools before starting a new session
+- if the selected trial has an empty `rgb/data.log`, the launcher omits the RGB stream so `yarpdataplayer` does not crash
 - `All Tools` is generic and does not auto-load a dataset
 
 ## BallBalance Tool Associations
 
 | Tool | Dataset / source | Purpose |
 | --- | --- | --- |
-| `yarpdataplayer` | `/workspace/data/BallBalance/test_moving` or `/workspace/data/BallBalance/test_stationary` | replays the recorded session |
-| `yarpview` | `/yarpdataplayer/grabber` | shows the RGB camera stream |
+| `yarpdataplayer` | `/workspace/data/BallBalance/<BALLBALANCE_DEMO_TRIAL>` | replays the selected recorded session |
+| `yarpview` | `/yarpdataplayer/grabber` or `/yarpdataplayer/rgb` | shows the RGB camera stream when the mounted recording actually contains RGB replay data |
 | `yarpscope` | `/yarpdataplayer/icub/right_arm/state:o` | plots the right-arm encoder stream |
 | `vFramer Left` | `/yarpdataplayer/zynqGrabber/left/AE:o` | visualizes the left event-camera stream |
 | `vFramer Right` | `/yarpdataplayer/zynqGrabber/right/AE:o` | visualizes the right event-camera stream |
@@ -321,6 +369,12 @@ VFRAMER_LEFT_SRC=/zynqGrabber/left/AE:o
 VFRAMER_RIGHT_SRC=/zynqGrabber/right/AE:o
 VFRAMER_WIDTH=640
 VFRAMER_HEIGHT=480
+```
+
+If you want the BallBalance demo to use a different recording, edit the same file:
+
+```bash
+BALLBALANCE_DEMO_TRIAL=trial_0
 ```
 
 If the host data folder changes, update [`.env`](.env) and re-apply the runtime:

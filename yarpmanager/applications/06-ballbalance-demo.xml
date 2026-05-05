@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <application>
-  <name>YARP View</name>
-  <description>Launch the RGB image viewer GUI.</description>
+  <name>BallBalance Demo</name>
+  <description>Launch the coordinated BallBalance demo using the trial selected in yarpmanager/defaults.env.</description>
   <version>1.0</version>
   <authors>
     <author email="">Bear</author>
   </authors>
   <module>
-    <name>yarpview</name>
+    <name>./scripts/internal/launch-ballbalance-demo.sh</name>
     <node>localhost</node>
     <workdir>/workspace/project</workdir>
     <display>--visible_na</display>
-    <ensure>
-      <wait when="start">2.0</wait>
-    </ensure>
   </module>
 </application>

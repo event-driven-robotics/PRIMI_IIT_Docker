@@ -1,0 +1,70 @@
+ Image primi_iit_docker-robotology Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 991B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 4.56kB done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for public.ecr.aws/ubuntu/ubuntu:22.04
+#3 DONE 1.1s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 89B done
+#4 DONE 0.0s
+
+#5 [ 1/12] FROM public.ecr.aws/ubuntu/ubuntu:22.04@sha256:74f1fdaef92dff9c4da5c35e90b92b07807ef8c27114f622c700107d7042d79e
+#5 resolve public.ecr.aws/ubuntu/ubuntu:22.04@sha256:74f1fdaef92dff9c4da5c35e90b92b07807ef8c27114f622c700107d7042d79e 0.0s done
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 transferring context: 157B done
+#6 DONE 0.0s
+
+#7 [ 5/12] RUN git clone --depth 1 --branch "v3.12.2" https://github.com/robotology/yarp.git "/usr/local/src/yarp"     && cmake -S "/usr/local/src/yarp" -B "/usr/local/src/yarp/build"     && cmake --build "/usr/local/src/yarp/build" -j"$(nproc)"     && cmake --install "/usr/local/src/yarp/build"     && yarp check
+#7 CACHED
+
+#8 [10/12] COPY container-scripts/container-entrypoint.sh /usr/local/bin/container-entrypoint
+#8 CACHED
+
+#9 [ 2/12] RUN apt-get update && apt-get install -y     ca-certificates     build-essential     cmake     cmake-curses-gui     ffmpeg     git     libace-dev     libassimp-dev     libboost-program-options-dev     libcanberra-gtk-module     libeigen3-dev     libglew-dev     libglfw3-dev     libglm-dev     libgsl-dev     libgraphviz-dev     libgstreamer-plugins-base1.0-dev     libgstreamer1.0-dev     libjpeg-dev     libopencv-dev     libqcustomplot-dev     mesa-utils     python3     python3-pip     qtbase5-dev     qtdeclarative5-dev     qtmultimedia5-dev     qml-module-qtmultimedia     qml-module-qt-labs-folderlistmodel     qml-module-qt-labs-settings     qml-module-qtquick-controls     qml-module-qtquick-dialogs     qml-module-qtquick-window2     qml-module-qtquick2     gstreamer1.0-libav     gstreamer1.0-plugins-bad     gstreamer1.0-plugins-base     gstreamer1.0-plugins-good     gosu     && rm -rf /var/lib/apt/lists/*
+#9 CACHED
+
+#10 [ 8/12] RUN groupadd -g 1000 -o robotology     && useradd -m -u 1000 -g 1000 -o -s /bin/bash robotology
+#10 CACHED
+
+#11 [ 3/12] RUN if [ "0" = "1" ]; then         if [ -z "" ] || [ -z "" ]; then             echo "INSTALL_METAVISION_SDK=1 requires PROPHESEE_JFROG_USER and PROPHESEE_JFROG_TOKEN" >&2;             exit 1;         fi;         apt-get update;         apt-get install -y curl;         curl -L https://propheseeai.jfrog.io/artifactory/api/security/keypair/prophesee-gpg/public >/tmp/propheseeai.jfrog.op.asc;         cp /tmp/propheseeai.jfrog.op.asc /etc/apt/trusted.gpg.d/propheseeai.jfrog.op.asc;         printf 'machine propheseeai.jfrog.io\nlogin %s\npassword %s\n' "" "" >/etc/apt/auth.conf.d/prophesee-jfrog.conf;         chmod 600 /etc/apt/auth.conf.d/prophesee-jfrog.conf;         printf 'deb https://propheseeai.jfrog.io/artifactory/metavision-sdk-5-debian/ /\n' >/etc/apt/sources.list.d/metavision-sdk.list;         apt-get update;         apt-get install -y metavision-sdk;         rm -f /etc/apt/auth.conf.d/prophesee-jfrog.conf /etc/apt/sources.list.d/metavision-sdk.list /tmp/propheseeai.jfrog.op.asc;         rm -rf /var/lib/apt/lists/*;     fi
+#11 CACHED
+
+#12 [ 4/12] RUN git clone --depth 1 --branch "v0.18.4" https://github.com/robotology/ycm-cmake-modules.git "/usr/local/src/ycm"     && cmake -S "/usr/local/src/ycm" -B "/usr/local/src/ycm/build"     && cmake --build "/usr/local/src/ycm/build" -j"$(nproc)"     && cmake --install "/usr/local/src/ycm/build"
+#12 CACHED
+
+#13 [11/12] RUN chmod +x /usr/local/bin/start-yarpserver /usr/local/bin/container-entrypoint
+#13 CACHED
+
+#14 [ 9/12] COPY container-scripts/start-yarpserver.sh /usr/local/bin/start-yarpserver
+#14 CACHED
+
+#15 [ 6/12] RUN git clone --depth 1 --branch "v2.9.0" https://github.com/robotology/icub-main.git "/usr/local/src/icub-main"     && cmake -S "/usr/local/src/icub-main" -B "/usr/local/src/icub-main/build" -DBUILD_TESTING=OFF     && cmake --build "/usr/local/src/icub-main/build" -j"$(nproc)"     && cmake --install "/usr/local/src/icub-main/build"
+#15 CACHED
+
+#16 [ 7/12] RUN git clone --depth 1 --branch "main" https://github.com/robotology/event-driven.git "/usr/local/src/event-driven"     && test "$(git -C "/usr/local/src/event-driven" rev-parse HEAD)" = "45bce288ba616b2f19152ee96cecbb4da1c924cf"     && cmake -S "/usr/local/src/event-driven" -B "/usr/local/src/event-driven/build"     && cmake --build "/usr/local/src/event-driven/build" -j"$(nproc)"     && cmake --install "/usr/local/src/event-driven/build"
+#16 CACHED
+
+#17 [12/12] WORKDIR /workspace/project
+#17 CACHED
+
+#18 exporting to image
+#18 exporting layers done
+#18 exporting manifest sha256:9ae38b4cab4fc2a02e66a85816329bf33eb2dd7b311b68ef00575d2de0828a4d done
+#18 exporting config sha256:96d2cbe6b2d776e7f807ae57525351870d19eabc67342dc4306e315c2984a2af done
+#18 exporting attestation manifest sha256:61c21aba3d6298da87f87866c24683d629765a94e10afd6d37ba9747cc17bff5 0.0s done
+#18 exporting manifest list sha256:0d5ba3bdacf7c5679f18a4fec1494879d7388359b3fb6d836b37f5bea7368e1c done
+#18 naming to docker.io/library/primi_iit_docker-robotology:latest done
+#18 unpacking to docker.io/library/primi_iit_docker-robotology:latest done
+#18 DONE 0.1s
+
+#19 resolving provenance for metadata file
+#19 DONE 0.0s
+ Image primi_iit_docker-robotology Built 
